@@ -11,6 +11,7 @@ import SpriteKit
 
 enum 图层:CGFloat{
     case 背景
+    case 障碍物
     case 前景
     case 游戏角色
 }
@@ -34,7 +35,9 @@ class GameScene: SKScene {
     
     let k前景地面数 = 2
     let k地面的移动速度 = -100.0
-    
+    let k底部障碍最小乘数 : CGFloat = 0.1
+    let k底部障碍最大乘数 : CGFloat = 0.6
+    let k缺口乘数: CGFloat = 3.5
     
     
 //    创建音效
@@ -53,6 +56,7 @@ class GameScene: SKScene {
      设置背景()
      设置前景()
      设置主角()
+     生成障碍()
     }
 //    设置相关方法
     func 设置背景(){
@@ -88,6 +92,31 @@ class GameScene: SKScene {
         主角.zPosition = 图层.游戏角色.rawValue
         世界单位.addChild(主角)
     }
+    
+    
+    // MARK: 游戏流程
+    
+    func 创建障碍物(图片名: String) ->SKSpriteNode{
+        let 障碍物 = SKSpriteNode(imageNamed: 图片名)
+        障碍物.zPosition = 图层.障碍物.rawValue
+        return 障碍物
+    }
+    
+    func 生成障碍(){
+        let 底部障碍 = 创建障碍物("CactusBottom")
+        let 起始X坐标 = size.width/2
+        let Y坐标最小值 = (游戏起点 - 底部障碍.size.height) + 游戏区域高度 * k底部障碍最小乘数
+        let Y坐标最大值 = (游戏起点 - 底部障碍.size.height) + 游戏区域高度 * k底部障碍最大乘数
+        底部障碍.position = CGPointMake(起始X坐标, CGFloat.random(min:Y坐标最小值, max:Y坐标最大值))
+        世界单位.addChild(底部障碍)
+        
+        
+        let 顶部障碍 = 创建障碍物("CactusTop")
+        顶部障碍.zRotation = CGFloat(180).degreesToRadians()
+        顶部障碍.position = CGPoint(x: 起始X坐标, y: 底部障碍.position.y + 底部障碍.size.height/2 + 顶部障碍.size.height/2 + 主角.size.height * k缺口乘数)
+        世界单位.addChild(顶部障碍)
+    }
+    
     
     func 主角飞(){
       速度 = CGPoint(x: 0, y: k上冲速度)
