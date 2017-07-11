@@ -11,42 +11,34 @@ import SpriteKit
 
 class GameViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        if let scene = GameScene(fileNamed:"GameScene") {
-            // Configure the view.
-            let skView = self.view as! SKView
-            skView.showsFPS = true
-            skView.showsNodeCount = true
-            
-            /* Sprite Kit applies additional optimizations to improve rendering performance */
-            skView.ignoresSiblingOrder = true
-            
-            /* Set the scale mode to scale to fit the window */
-            scene.scaleMode = .AspectFill
-            
-            skView.presentScene(scene)
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        if let skview = self.view as? SKView{
+            if skview.scene == nil{
+//                创建游戏的场景
+                let 长宽比 = skview.bounds.height / skview.bounds.width
+                let 场景 = GameScene(size:CGSize(width: 320, height: 320*长宽比))
+                
+//                看到帧数
+                skview.showsFPS = true
+//                场景中（节点）单位的数量
+                skview.showsNodeCount = true
+//                物理模型的外边框（轮廓）
+                skview.showsPhysics = true
+//                忽略游戏中增加元素的顺序（所有元素在同一层级）
+                skview.ignoresSiblingOrder = true
+                
+//                场景的拉伸模式是——————等比例缩放
+                场景.scaleMode = .AspectFill
+//                把场景加入sk视图中
+                skview.presentScene(场景)
+            }
         }
     }
-
-    override func shouldAutorotate() -> Bool {
-        return true
-    }
-
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            return .AllButUpsideDown
-        } else {
-            return .All
-        }
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Release any cached data, images, etc that aren't in use.
-    }
-
+    
+    
+//    手机顶部栏是否隐藏 —>是
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
