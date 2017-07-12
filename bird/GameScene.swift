@@ -16,9 +16,24 @@ enum 图层:CGFloat{
     case 游戏角色
 }
 
+enum 游戏状态{
+    case 主菜单
+    case 教程
+    case 游戏
+    case 跌落
+    case 显示分数
+    case 结束
+}
+
+struct 物理层{
+    static let 无: UInt32 = 0
+    static let 游戏角色: UInt32 = 0b1 //1
+    static let 障碍物: UInt32 = 0b10  //2
+    static let 地面: UInt32 = 0b100   //4
+}
 
 
-class GameScene: SKScene {
+class GameScene: SKScene,SKPhysicsContactDelegate {
     
 //   世界单位－－－ 所有角色场景的容器
     let 世界单位 = SKNode()
@@ -33,6 +48,10 @@ class GameScene: SKScene {
     let k重力:CGFloat = -1000.0
     let k上冲速度: CGFloat = 300.0
     var 速度 = CGPoint.zero
+    var 撞击了地面 = false
+    var 撞击了障碍物 = false
+    
+    var 当前的游戏状态: 游戏状态 = .游戏
     
     let k前景地面数 = 2
     let k地面的移动速度 = -100.0
@@ -59,13 +78,18 @@ class GameScene: SKScene {
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
-     addChild(世界单位)
-     设置背景()
-     设置前景()
-     设置主角()
-     设置帽子()
+        //关掉重力
+        physicsWorld.gravity = CGVectorMake(0, 0)
+        
+        physicsWorld.contactDelegate = self
+        
+        addChild(世界单位)
+        设置背景()
+        设置前景()
+        设置主角()
+        设置帽子()
 //     生成障碍()
-     无限重生障碍()
+        无限重生障碍()
     }
 //    设置相关方法
     func 设置背景(){
@@ -84,6 +108,13 @@ class GameScene: SKScene {
         游戏起点 = size.height - 背景.size.height
         游戏区域高度 = 背景.size.height
         
+        
+        let 左下 = CGPoint(x: 0, y: 游戏起点)
+        let 右下 = CGPoint(x: size.width, y: 游戏起点)
+        self.physicsBody = SKPhysicsBody(edgeFromPoint: 左下, toPoint: 右下)
+        self.physicsBody?.categoryBitMask = 物理层 .地面
+        self.physicsBody?.collisionBitMask = 0
+        self.physicsBody?.collisionBitMask = 物理层.游戏角色
     }
     func 设置前景(){
         for i in 0..<k前景地面数{
@@ -129,6 +160,10 @@ class GameScene: SKScene {
         CGPathCloseSubpath(path)
         
         主角.physicsBody = SKPhysicsBody(polygonFromPath: path)
+//        定义类别掩码----物理引擎能够识别的类似图层
+        主角.physicsBody?.categoryBitMask = 物理层.游戏角色
+        主角.physicsBody?.categoryBitMask = 0
+        主角.physicsBody?.contactTestBitMask = 物理层.障碍物 | 物理层.地面
         
         
         世界单位.addChild(主角)
@@ -143,21 +178,44 @@ class GameScene: SKScene {
     func 创建障碍物(图片名: String) ->SKSpriteNode{
         let 障碍物 = SKSpriteNode(imageNamed: 图片名)
         障碍物.zPosition = 图层.障碍物.rawValue
+        
+        
+        //碰撞体积设置同上方主角
+        let offsetX = 障碍物.size.width * 障碍物.anchorPoint.x
+        let offsetY = 障碍物.size.height * 障碍物.anchorPoint.y
+        
+        let path = CGPathCreateMutable()
+        
+        CGPathMoveToPoint(path, nil, 4 - offsetX, 0 - offsetY)
+        CGPathAddLineToPoint(path, nil, 5 - offsetX, 309 - offsetY)
+        CGPathAddLineToPoint(path, nil, 46 - offsetX, 309 - offsetY)
+        CGPathAddLineToPoint(path, nil, 47 - offsetX, 3 - offsetY)
+        
+        CGPathCloseSubpath(path)
+        
+        障碍物.physicsBody = SKPhysicsBody(polygonFromPath: path)
+        障碍物.physicsBody?.contactTestBitMask = 物理层.障碍物
+        障碍物.physicsBody?.collisionBitMask = 0
+        障碍物.physicsBody?.contactTestBitMask = 物理层.游戏角色
+        
         return 障碍物
     }
     
     func 生成障碍(){
         let 底部障碍 = 创建障碍物("CactusBottom")
         let 起始X坐标 = size.width + 底部障碍.size.width/2
-        let Y坐标最小值 = (游戏起点 - 底部障碍.size.height) + 游戏区域高度 * k底部障碍最小乘数
-        let Y坐标最大值 = (游戏起点 - 底部障碍.size.height) + 游戏区域高度 * k底部障碍最大乘数
+        let Y坐标最小值 = (游戏起点 - 底部障碍.size.height/2) + 游戏区域高度 * k底部障碍最小乘数
+        let Y坐标最大值 = (游戏起点 - 底部障碍.size.height/2) + 游戏区域高度 * k底部障碍最大乘数
         底部障碍.position = CGPointMake(起始X坐标, CGFloat.random(min:Y坐标最小值, max:Y坐标最大值))
+        底部障碍.name = "底部障碍"
         世界单位.addChild(底部障碍)
         
         
         let 顶部障碍 = 创建障碍物("CactusTop")
         顶部障碍.zRotation = CGFloat(180).degreesToRadians()
         顶部障碍.position = CGPoint(x: 起始X坐标, y: 底部障碍.position.y + 底部障碍.size.height/2 + 顶部障碍.size.height/2 + 主角.size.height * k缺口乘数)
+        顶部障碍.name = "顶部障碍"
+        
         世界单位.addChild(顶部障碍)
         
         
@@ -167,7 +225,7 @@ class GameScene: SKScene {
             ])
         
         顶部障碍.runAction(移动的动作队列)
-        顶部障碍.runAction(移动的动作队列)
+        底部障碍.runAction(移动的动作队列)
     
     }
     
@@ -178,13 +236,28 @@ class GameScene: SKScene {
         let 重生动作队列 = SKAction.sequence([重生障碍,每次重生间隔])
         let 无限重生  =  SKAction.repeatActionForever(重生动作队列)
         let 总的动作队列 = SKAction.sequence([首次延时,无限重生])
-        runAction(总的动作队列)
+        runAction(总的动作队列,withKey:"重生")
     }
     
-    
+    func 停止重生障碍(){
+        removeActionForKey("重生")
+        
+        世界单位.enumerateChildNodesWithName("顶部障碍", usingBlock :{ 匹配单位, _ in
+            匹配单位.removeAllActions()
+        })
+        
+        世界单位.enumerateChildNodesWithName("底部障碍", usingBlock : { 匹配单位, _ in
+            匹配单位.removeAllActions()
+        })
+    }
     
     func 主角飞(){
       速度 = CGPoint(x: 0, y: k上冲速度)
+//        移动帽子
+        let 向上移动 = SKAction.moveByX(0, y: 12, duration: 0.15)
+        向上移动.timingMode = .EaseInEaseOut
+        let 向下移动 = 向上移动.reversedAction()
+        帽子.runAction(SKAction.sequence([向上移动,向下移动]))
     }
     
     
@@ -194,12 +267,25 @@ class GameScene: SKScene {
         
         runAction(拍打)
         
-        主角飞()
+        switch 当前的游戏状态{
+        case .主菜单:
+            break
+        case .教程:
+            break
+        case .游戏:
+            主角飞()
+            break
+        case .跌落:
+            break
+        case .显示分数:
+            break
+        case .结束:
+            break
+        }
         
-        let 向上移动 = SKAction.moveByX(0, y: 12, duration: 0.15)
-        向上移动.timingMode = .EaseInEaseOut
-        let 向下移动 = 向上移动.reversedAction()
-        帽子.runAction(SKAction.sequence([向上移动,向下移动]))
+        
+        
+      
         
     }
 
@@ -212,8 +298,30 @@ class GameScene: SKScene {
             dt = 0
         }
         上一次更新时间 = 当前时间
-        更新主角()
-        更新前景()
+//        更新主角()
+//        更新前景()
+//        撞击障碍物检查()
+        switch 当前的游戏状态{
+        case .主菜单:
+            break
+        case .教程:
+            break
+        case .游戏:
+            更新前景()
+            更新主角()
+            撞击障碍物检查()
+            撞击地面检查()
+            break
+        case .跌落:
+            更新主角()
+            撞击地面检查()
+            break
+        case .显示分数:
+            break
+        case .结束:
+            break
+        }
+        
         
     }
     
@@ -233,7 +341,7 @@ class GameScene: SKScene {
     }
     
     func 更新前景(){
-        世界单位.enumerateChildNodesWithName("前景", usingBlock: { 匹配单位, _ in
+        世界单位.enumerateChildNodesWithName("前景"){ 匹配单位, _ in
             if let 前景 = 匹配单位 as? SKSpriteNode{
                 let 地面移动速度 = CGPoint(x: self.k地面的移动速度, y: 0)
                 前景.position += 地面移动速度 * CGFloat(self.dt)
@@ -242,7 +350,51 @@ class GameScene: SKScene {
                     前景.position += CGPoint(x: 前景.size.width * CGFloat(self.k前景地面数), y: 0)
                 }
             }
-        })
+        }
+    }
+    
+    func 撞击障碍物检查(){
+        if 撞击了障碍物{
+             撞击了障碍物 = false
+             切换到跌落状态()
+            
+        }
+    }
+    func 撞击地面检查(){
+        if 撞击了地面{
+            撞击了地面 = false
+            速度 = CGPoint.zero
+            主角.zRotation = CGFloat(-90).degreesToRadians()
+            主角.position = CGPoint(x: 主角.position.x, y: 游戏起点 + 主角.size.width/2)
+            runAction(撞击地面)
+            切换到显示分数状态()
+        }
+    }
+    
+    func 切换到跌落状态(){
+       当前的游戏状态 = .跌落
+        runAction(SKAction.sequence([
+            摔倒,SKAction.waitForDuration(0.1),下落]))
+        
+        主角.removeAllActions()
+        停止重生障碍()
+    }
+    
+    func 切换到显示分数状态(){
+        当前的游戏状态 = .显示分数
+        主角.removeAllActions()
+        停止重生障碍()
+    }
+        
+//    物理引擎
+    func didBeginContact(碰撞双方: SKPhysicsContact) {
+        let 被撞对象 = 碰撞双方.bodyA.categoryBitMask == 物理层.游戏角色 ? 碰撞双方.bodyB : 碰撞双方.bodyA
+        if 被撞对象.categoryBitMask == 物理层.地面{
+            撞击了地面 = true
+        }
+        if 被撞对象.categoryBitMask == 物理层.障碍物{
+            撞击了障碍物 = true
+        }
     }
 
 }
