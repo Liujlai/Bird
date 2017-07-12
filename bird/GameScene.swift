@@ -14,6 +14,7 @@ enum 图层:CGFloat{
     case 障碍物
     case 前景
     case 游戏角色
+    case UI
 }
 
 enum 游戏状态{
@@ -63,7 +64,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     let k首次生成障碍延时: NSTimeInterval = 1.75
     let k每次重生障碍延时: NSTimeInterval = 1.5
     
-    
+    let k顶部留白: CGFloat = 20.0
+    let k字体名称 = "AmericanTypewriter-bold"
+    var 得分标签: SKLabelNode!
+    var 当前分数 = 0
     
     
 //    创建音效
@@ -88,6 +92,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         设置前景()
         设置主角()
         设置帽子()
+        设置得分标签()
 //     生成障碍()
         无限重生障碍()
     }
@@ -172,13 +177,22 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         帽子.position = CGPoint(x: 31 - 帽子.size.width/2, y: 29 - 帽子.size.height/2)
         主角.addChild(帽子)
     }
-    
+    func 设置得分标签(){
+        得分标签 = SKLabelNode(fontNamed: k字体名称)
+        得分标签.fontColor = SKColor(red: 101.0/255.0, green: 71.0/255.0, blue: 73.0/255.0, alpha: 1.0)
+        得分标签.position = CGPoint(x: size.width/2, y: size.height - k顶部留白)
+//        对齐方式
+        得分标签.verticalAlignmentMode = .Top
+        得分标签.text = "0"
+        得分标签.zPosition = 图层.UI.rawValue
+        世界单位.addChild(得分标签)
+    }
     // MARK: 游戏流程
     
     func 创建障碍物(图片名: String) ->SKSpriteNode{
         let 障碍物 = SKSpriteNode(imageNamed: 图片名)
         障碍物.zPosition = 图层.障碍物.rawValue
-        
+        障碍物.userData = NSMutableDictionary()
         
         //碰撞体积设置同上方主角
         let offsetX = 障碍物.size.width * 障碍物.anchorPoint.x
@@ -194,7 +208,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         CGPathCloseSubpath(path)
         
         障碍物.physicsBody = SKPhysicsBody(polygonFromPath: path)
-        障碍物.physicsBody?.contactTestBitMask = 物理层.障碍物
+        障碍物.physicsBody?.categoryBitMask = 物理层.障碍物
         障碍物.physicsBody?.collisionBitMask = 0
         障碍物.physicsBody?.contactTestBitMask = 物理层.游戏角色
         
@@ -311,6 +325,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             更新主角()
             撞击障碍物检查()
             撞击地面检查()
+            更新得分()
             break
         case .跌落:
             更新主角()
@@ -369,6 +384,28 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             runAction(撞击地面)
             切换到显示分数状态()
         }
+    }
+    
+    
+    func 更新得分(){
+        世界单位.enumerateChildNodesWithName("顶部障碍", usingBlock: {匹配单位, _ in
+            if let 障碍物 = 匹配单位 as? SKSpriteNode{
+                if let 已通过 = 障碍物.userData?["已通过"] as? NSNumber{
+                    if 已通过.boolValue{
+                        return
+                    }
+                }
+                if self.主角.position.x > 障碍物.position.x + 障碍物.size.width/2{
+                    
+                    self.当前分数++
+                    self.得分标签.text = "\(self.当前分数)"
+                    self.runAction(self.得分)
+                    障碍物.userData?["已通过"] = NSNumber(bool: true)
+                    
+                    
+                }
+            }
+        })
     }
     
     func 切换到跌落状态(){

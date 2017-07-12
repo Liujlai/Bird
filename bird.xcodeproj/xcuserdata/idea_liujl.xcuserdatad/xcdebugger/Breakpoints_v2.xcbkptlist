@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "bird/GameScene.swift"
-            timestampString = "521538881.005785"
+            timestampString = "521541421.705342"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "399"
-            endingLineNumber = "399"
+            startingLineNumber = "436"
+            endingLineNumber = "436"
             landmarkName = "GameScene"
             landmarkType = "3">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "bird/GameScene.swift"
-            timestampString = "521536745.802577"
+            timestampString = "521540440.036669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "223"
-            endingLineNumber = "223"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
             landmarkName = "&#x751f;&#x6210;&#x969c;&#x788d;()"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "bird/GameScene.swift"
-            timestampString = "521535663.352117"
+            timestampString = "521540440.036669"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
             landmarkName = "&#x8bbe;&#x7f6e;&#x4e3b;&#x89d2;()"
             landmarkType = "5">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "bird/GameScene.swift"
-            timestampString = "521538881.005785"
+            timestampString = "521541421.705342"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "396"
-            endingLineNumber = "396"
+            startingLineNumber = "433"
+            endingLineNumber = "433"
             landmarkName = "didBeginContact(_:)"
             landmarkType = "5">
          </BreakpointContent>
