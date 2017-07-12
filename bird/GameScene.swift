@@ -25,6 +25,7 @@ class GameScene: SKScene {
     var 游戏起点:CGFloat = 0
     var 游戏区域高度:CGFloat = 0
     let 主角 = SKSpriteNode(imageNamed: "Bird0")
+    let 帽子 = SKSpriteNode(imageNamed: "Sombrero")
     var 上一次更新时间:NSTimeInterval = 0
     var dt:NSTimeInterval=0
     
@@ -38,6 +39,12 @@ class GameScene: SKScene {
     let k底部障碍最小乘数 : CGFloat = 0.1
     let k底部障碍最大乘数 : CGFloat = 0.6
     let k缺口乘数: CGFloat = 3.5
+    
+    
+    let k首次生成障碍延时: NSTimeInterval = 1.75
+    let k每次重生障碍延时: NSTimeInterval = 1.5
+    
+    
     
     
 //    创建音效
@@ -56,7 +63,9 @@ class GameScene: SKScene {
      设置背景()
      设置前景()
      设置主角()
-     生成障碍()
+     设置帽子()
+//     生成障碍()
+     无限重生障碍()
     }
 //    设置相关方法
     func 设置背景(){
@@ -92,7 +101,10 @@ class GameScene: SKScene {
         主角.zPosition = 图层.游戏角色.rawValue
         世界单位.addChild(主角)
     }
-    
+    func 设置帽子(){
+        帽子.position = CGPoint(x: 31 - 帽子.size.width/2, y: 29 - 帽子.size.height/2)
+        主角.addChild(帽子)
+    }
     
     // MARK: 游戏流程
     
@@ -104,7 +116,7 @@ class GameScene: SKScene {
     
     func 生成障碍(){
         let 底部障碍 = 创建障碍物("CactusBottom")
-        let 起始X坐标 = size.width/2
+        let 起始X坐标 = size.width + 底部障碍.size.width/2
         let Y坐标最小值 = (游戏起点 - 底部障碍.size.height) + 游戏区域高度 * k底部障碍最小乘数
         let Y坐标最大值 = (游戏起点 - 底部障碍.size.height) + 游戏区域高度 * k底部障碍最大乘数
         底部障碍.position = CGPointMake(起始X坐标, CGFloat.random(min:Y坐标最小值, max:Y坐标最大值))
@@ -115,7 +127,28 @@ class GameScene: SKScene {
         顶部障碍.zRotation = CGFloat(180).degreesToRadians()
         顶部障碍.position = CGPoint(x: 起始X坐标, y: 底部障碍.position.y + 底部障碍.size.height/2 + 顶部障碍.size.height/2 + 主角.size.height * k缺口乘数)
         世界单位.addChild(顶部障碍)
+        
+        
+        let X轴移动距离 = -(size.width + 底部障碍.size.width)
+        let 移动持续时间 = NSTimeInterval(X轴移动距离) / k地面的移动速度
+        let 移动的动作队列 = SKAction.sequence([SKAction.moveByX(X轴移动距离, y: 0, duration: NSTimeInterval(移动持续时间)),SKAction.removeFromParent()
+            ])
+        
+        顶部障碍.runAction(移动的动作队列)
+        顶部障碍.runAction(移动的动作队列)
+    
     }
+    
+    func 无限重生障碍(){
+        let 首次延时 = SKAction.waitForDuration(k首次生成障碍延时)
+        let 重生障碍 = SKAction.runBlock(生成障碍)
+        let 每次重生间隔 = SKAction.waitForDuration(k每次重生障碍延时)
+        let 重生动作队列 = SKAction.sequence([重生障碍,每次重生间隔])
+        let 无限重生  =  SKAction.repeatActionForever(重生动作队列)
+        let 总的动作队列 = SKAction.sequence([首次延时,无限重生])
+        runAction(总的动作队列)
+    }
+    
     
     
     func 主角飞(){
@@ -130,6 +163,11 @@ class GameScene: SKScene {
         runAction(拍打)
         
         主角飞()
+        
+        let 向上移动 = SKAction.moveByX(0, y: 12, duration: 0.15)
+        向上移动.timingMode = .EaseInEaseOut
+        let 向下移动 = 向上移动.reversedAction()
+        帽子.runAction(SKAction.sequence([向上移动,向下移动]))
         
     }
 
