@@ -99,6 +99,38 @@ class GameScene: SKScene {
         主角.position = CGPoint(x: size.width*0.2, y: 游戏区域高度*0.4+游戏起点)
         
         主角.zPosition = 图层.游戏角色.rawValue
+        
+        
+        /**
+        /碰撞体积的设置
+        / 在网址https://stackoverflow.com/questions/19040144中，
+        ／选择Xelt的，点击Run code snippet后点 Full page，
+        ／拖入图片，在图片上点击选择碰撞体积
+        ／复制Output中生成的代码
+        */
+        
+        let offsetX = 主角.size.width * 主角.anchorPoint.x
+        let offsetY = 主角.size.height * 主角.anchorPoint.y
+        
+        let path = CGPathCreateMutable()
+        
+        CGPathMoveToPoint(path, nil, 2 - offsetX, 13 - offsetY)
+        CGPathAddLineToPoint(path, nil, 17 - offsetX, 21 - offsetY)
+        CGPathAddLineToPoint(path, nil, 25 - offsetX, 26 - offsetY)
+        CGPathAddLineToPoint(path, nil, 35 - offsetX, 27 - offsetY)
+        CGPathAddLineToPoint(path, nil, 38 - offsetX, 21 - offsetY)
+        CGPathAddLineToPoint(path, nil, 37 - offsetX, 9 - offsetY)
+        CGPathAddLineToPoint(path, nil, 34 - offsetX, 3 - offsetY)
+        CGPathAddLineToPoint(path, nil, 24 - offsetX, 2 - offsetY)
+        CGPathAddLineToPoint(path, nil, 19 - offsetX, 0 - offsetY)
+        CGPathAddLineToPoint(path, nil, 9 - offsetX, 1 - offsetY)
+        CGPathAddLineToPoint(path, nil, 4 - offsetX, 2 - offsetY)
+        
+        CGPathCloseSubpath(path)
+        
+        主角.physicsBody = SKPhysicsBody(polygonFromPath: path)
+        
+        
         世界单位.addChild(主角)
     }
     func 设置帽子(){
