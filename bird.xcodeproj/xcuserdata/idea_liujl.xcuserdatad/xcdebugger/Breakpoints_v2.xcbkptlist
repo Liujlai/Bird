@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "bird/GameScene.swift"
-            timestampString = "521541421.705342"
+            timestampString = "521606158.317578"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "436"
-            endingLineNumber = "436"
+            startingLineNumber = "513"
+            endingLineNumber = "513"
             landmarkName = "GameScene"
             landmarkType = "3">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "bird/GameScene.swift"
-            timestampString = "521540440.036669"
+            timestampString = "521606158.317578"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
+            startingLineNumber = "296"
+            endingLineNumber = "296"
             landmarkName = "&#x751f;&#x6210;&#x969c;&#x788d;()"
             landmarkType = "5">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "bird/GameScene.swift"
-            timestampString = "521541421.705342"
+            timestampString = "521606158.317578"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "433"
-            endingLineNumber = "433"
+            startingLineNumber = "510"
+            endingLineNumber = "510"
             landmarkName = "didBeginContact(_:)"
             landmarkType = "5">
          </BreakpointContent>

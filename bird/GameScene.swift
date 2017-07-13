@@ -187,6 +187,65 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         得分标签.zPosition = 图层.UI.rawValue
         世界单位.addChild(得分标签)
     }
+    
+    func 设置记分板(){
+        if 当前分数 > 最高分(){
+            设置最高分(当前分数)
+        }
+        let 记分板 = SKSpriteNode(imageNamed: "ScoreCard")
+        记分板.position = CGPoint(x: size.width/2, y: size.height/2)
+        记分板.zPosition = 图层.UI.rawValue
+        世界单位.addChild(记分板)
+        
+        
+        let 当前分数标签 = SKLabelNode(fontNamed: k字体名称)
+        当前分数标签.fontColor = SKColor(red: 101.0/255.0, green: 71.0/255.0, blue: 73.0/255.0, alpha: 1.0)
+        当前分数标签.position = CGPoint(x: -记分板.size.width/4, y: -记分板.size.height/3)
+        当前分数标签.text = "\(当前分数)"
+        当前分数标签.zPosition = 图层.UI.rawValue
+        记分板.addChild(当前分数标签)
+        
+        
+        let 最高分标签 = SKLabelNode(fontNamed: k字体名称)
+        最高分标签.fontColor = SKColor(red: 101.0/255.0, green: 71.0/255.0, blue: 73.0/255.0, alpha: 1.0)
+        最高分标签.position = CGPoint(x: 记分板.size.width/4, y: -记分板.size.height/3)
+        最高分标签.text = "\(最高分())"
+        最高分标签.zPosition = 图层.UI.rawValue
+        记分板.addChild(最高分标签)
+        
+        
+        let 游戏结束 = SKSpriteNode(imageNamed: "GameOver")
+        游戏结束.position = CGPoint(x: size.width/2, y: size.height/2 + 记分板.size.height/2 + k顶部留白 + 游戏结束.size.height/2)
+        游戏结束.zPosition = 图层.UI.rawValue
+        世界单位.addChild(游戏结束)
+        
+        
+        let ok按钮 = SKSpriteNode(imageNamed: "Button")
+        ok按钮.position = CGPoint(x: size.width/4, y: size.height/2 - 记分板.size.height/2 - k顶部留白 - ok按钮.size.height/2)
+        ok按钮.zPosition = 图层.UI.rawValue
+        世界单位.addChild(ok按钮)
+        
+        
+        
+        let ok = SKSpriteNode(imageNamed: "OK")
+        ok.position = CGPoint.zero
+        ok.zPosition = 图层.UI.rawValue
+        ok按钮.addChild(ok)
+
+        let 分享按钮 = SKSpriteNode(imageNamed: "ButtonRight")
+        分享按钮.position = CGPoint(x: size.width * 0.75, y: size.height/2 - 记分板.size.height/2 - k顶部留白 - 分享按钮.size.height/2)
+        分享按钮.zPosition = 图层.UI.rawValue
+        世界单位.addChild(分享按钮)
+        
+        
+        
+        let 分享 = SKSpriteNode(imageNamed: "Share")
+        分享.position = CGPoint.zero
+        分享.zPosition = 图层.UI.rawValue
+        分享按钮.addChild(分享)
+        
+    }
+    
     // MARK: 游戏流程
     
     func 创建障碍物(图片名: String) ->SKSpriteNode{
@@ -421,6 +480,24 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         当前的游戏状态 = .显示分数
         主角.removeAllActions()
         停止重生障碍()
+        设置记分板()
+    }
+    
+    func 切换到新游戏(){
+        runAction(砰)
+        let 新的游戏场景 = GameScene.init(size:size)
+        
+        let 切换音效 = SKTransition.fadeWithColor(SKColor.blackColor(), duration: 0.05)
+        view?.presentScene(新的游戏场景, transition: 切换音效)
+    }
+    
+    func 最高分() ->Int{
+        return NSUserDefaults.standardUserDefaults().integerForKey("最高分")
+    
+    }
+    func 设置最高分(最高分:Int){
+        NSUserDefaults.standardUserDefaults().setInteger(最高分, forKey: "最高分")
+        NSUserDefaults.standardUserDefaults().synchronize()
     }
         
 //    物理引擎
