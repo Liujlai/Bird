@@ -70,6 +70,9 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     var 当前分数 = 0
     
     
+    let k动画延时 = 0.3
+    
+    
 //    创建音效
     let 叮 = SKAction.playSoundFileNamed("ding.wav", waitForCompletion: false)
     let 拍打 = SKAction.playSoundFileNamed("flapping.wav", waitForCompletion: false)
@@ -243,6 +246,33 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         分享.position = CGPoint.zero
         分享.zPosition = 图层.UI.rawValue
         分享按钮.addChild(分享)
+        
+//
+        /**
+        设置记分页面特效
+        
+        -
+        */
+        游戏结束.setScale(0)
+//        alpha 值为透明度
+        游戏结束.alpha = 0
+        let 动画 = SKAction.group([SKAction.fadeInWithDuration(k动画延时),SKAction.scaleTo(1.0, duration: k动画延时)])
+        动画.timingMode = .EaseInEaseOut
+        游戏结束.runAction(SKAction.sequence([SKAction.waitForDuration(k动画延时),动画]))
+        
+        记分板.position = CGPoint(x: size.width/2, y: -记分板.size.height/2)
+        let 向上移动的动画 = SKAction.moveTo(CGPoint(x: size.width/2, y: size.height/2), duration: k动画延时)
+        向上移动的动画.timingMode = .EaseInEaseOut
+        记分板.runAction(SKAction.sequence([SKAction.waitForDuration(k动画延时*2),向上移动的动画]))
+        
+        
+        ok按钮.alpha = 0
+        分享按钮.alpha = 0
+        
+        let  渐变动画 = SKAction.sequence([SKAction.waitForDuration(k动画延时*3),SKAction.fadeInWithDuration(k动画延时)])
+        ok按钮.runAction(渐变动画)
+        分享按钮.runAction(渐变动画)
+        
         
     }
     
