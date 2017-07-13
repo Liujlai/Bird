@@ -91,15 +91,29 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         
         addChild(世界单位)
-        设置背景()
-        设置前景()
-        设置主角()
-        设置帽子()
-        设置得分标签()
-//     生成障碍()
-        无限重生障碍()
+        切换到教程状态()
+
     }
-//    设置相关方法
+    //MARK:    设置相关方法
+    func 设置教程(){
+        let 教程 = SKSpriteNode(imageNamed: "Tutorial")
+        教程.position = CGPoint(x: size.width*0.5, y: 游戏区域高度*0.4 + 游戏起点)
+        教程.name = "教程"
+        教程.zPosition = 图层.UI.rawValue
+        世界单位.addChild(教程)
+        
+        
+        
+        
+        let 准备 = SKSpriteNode(imageNamed: "Ready")
+        准备.position = CGPoint(x: size.width*0.5, y: 游戏区域高度*0.7 + 游戏起点)
+        准备.name = "教程"
+        准备.zPosition = 图层.UI.rawValue
+        世界单位.addChild(准备)
+    }
+    
+    
+    
     func 设置背景(){
 //        设置背景文件
        let 背景 = SKSpriteNode(imageNamed: "Background")
@@ -274,6 +288,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         分享按钮.runAction(渐变动画)
         
         
+        
+        
+        let 声音特效 = SKAction.sequence([SKAction.waitForDuration(k动画延时),砰,SKAction.waitForDuration(k动画延时),砰,SKAction.waitForDuration(k动画延时),砰,SKAction.runBlock(切换到结束状态)])
+        runAction(声音特效)
+        
     }
     
     // MARK: 游戏流程
@@ -374,6 +393,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         case .主菜单:
             break
         case .教程:
+            切换到游戏状态()
             break
         case .游戏:
             主角飞()
@@ -381,8 +401,10 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         case .跌落:
             break
         case .显示分数:
+            
             break
         case .结束:
+            切换到新游戏()
             break
         }
         
@@ -496,6 +518,31 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
             }
         })
     }
+    // MARK: 游戏状态
+    
+    func 切换到教程状态(){
+         当前的游戏状态 = .教程
+        设置背景()
+        设置前景()
+        设置主角()
+        设置帽子()
+        设置得分标签()
+        设置教程()
+    }
+    
+    
+    func 切换到游戏状态(){
+        当前的游戏状态 = .游戏
+        
+        世界单位.enumerateChildNodesWithName("教程"){ 匹配单位, _ in
+            匹配单位.runAction(SKAction.sequence([SKAction.fadeOutWithDuration(0.05),SKAction.removeFromParent()]))
+        }
+        
+        无限重生障碍()
+        主角飞()
+    }
+
+
     
     func 切换到跌落状态(){
        当前的游戏状态 = .跌落
@@ -520,7 +567,11 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
         let 切换音效 = SKTransition.fadeWithColor(SKColor.blackColor(), duration: 0.05)
         view?.presentScene(新的游戏场景, transition: 切换音效)
     }
+    func 切换到结束状态(){
+        当前的游戏状态 = .结束
+    }
     
+    // MARK: 分数
     func 最高分() ->Int{
         return NSUserDefaults.standardUserDefaults().integerForKey("最高分")
     
