@@ -58,8 +58,7 @@
 		55424C641F147FA600EB561E /* hitGround.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hitGround.wav; sourceTree = "<group>"; };
 		55424C651F147FA600EB561E /* pop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pop.wav; sourceTree = "<group>"; };
 		55424C661F147FA600EB561E /* whack.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = whack.wav; sourceTree = "<group>"; };
-		5596EB8F1F1472A300F00E00 /* Flappy Uncle
-.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flappy Uncle\n.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5596EB8F1F1472A300F00E00 /* Flappy Uncle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flappy Uncle.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5596EB921F1472A300F00E00 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5596EB961F1472A300F00E00 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		5596EB981F1472A300F00E00 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -143,8 +142,7 @@
 		5596EB901F1472A300F00E00 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5596EB8F1F1472A300F00E00 /* Flappy Uncle
-.app */,
+				5596EB8F1F1472A300F00E00 /* Flappy Uncle.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -181,8 +179,7 @@
 			);
 			name = bird;
 			productName = bird;
-			productReference = 5596EB8F1F1472A300F00E00 /* Flappy Uncle
-.app */;
+			productReference = 5596EB8F1F1472A300F00E00 /* Flappy Uncle.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -372,7 +369,7 @@
 				INFOPLIST_FILE = bird/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.day1.bird;
-				PRODUCT_NAME = "Flappy Uncle\n";
+				PRODUCT_NAME = "Flappy Uncle";
 			};
 			name = Debug;
 		};
@@ -383,7 +380,7 @@
 				INFOPLIST_FILE = bird/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.day1.bird;
-				PRODUCT_NAME = "Flappy Uncle\n";
+				PRODUCT_NAME = "Flappy Uncle";
 			};
 			name = Release;
 		};
