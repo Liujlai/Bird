@@ -578,6 +578,7 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
              撞击了障碍物 = false
              切换到跌落状态()
             
+            
         }
     }
     func 撞击地面检查(){
@@ -697,10 +698,18 @@ class GameScene: SKScene,SKPhysicsContactDelegate {
     //MARK: 物理引擎
     func didBeginContact(碰撞双方: SKPhysicsContact) {
         let 被撞对象 = 碰撞双方.bodyA.categoryBitMask == 物理层.游戏角色 ? 碰撞双方.bodyB : 碰撞双方.bodyA
+      
         if 被撞对象.categoryBitMask == 物理层.地面{
             撞击了地面 = true
         }
-        if 被撞对象.categoryBitMask == 物理层.障碍物{
+        /**
+        *  经测试 被撞对象.categoryBitMask 的值要么4，要么是0，所以暂时将 物理层.障碍物 改为 物理层.无
+        */
+        
+//        if 被撞对象.categoryBitMask == 物理层.障碍物{
+//            撞击了障碍物 = true
+//        }
+        if 被撞对象.categoryBitMask == 物理层.无{
             撞击了障碍物 = true
         }
     }
