@@ -30,7 +30,7 @@ class GameViewController: UIViewController {
                 skview.ignoresSiblingOrder = true
                 
 //                场景的拉伸模式是——————等比例缩放
-                场景.scaleMode = .AspectFill
+                场景.scaleMode = .aspectFill
 //                把场景加入sk视图中
                 skview.presentScene(场景)
             }
@@ -39,7 +39,7 @@ class GameViewController: UIViewController {
     
     
 //    手机顶部栏是否隐藏 —>是
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
 }

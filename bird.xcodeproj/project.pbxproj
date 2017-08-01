@@ -193,6 +193,7 @@
 				TargetAttributes = {
 					5596EB8E1F1472A300F00E00 = {
 						CreatedOnToolsVersion = 7.1;
+						LastSwiftMigration = 0830;
 					};
 				};
 			};
@@ -370,6 +371,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.day1.bird;
 				PRODUCT_NAME = "Flappy Uncle";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -381,6 +383,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.day1.bird;
 				PRODUCT_NAME = "Flappy Uncle";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
